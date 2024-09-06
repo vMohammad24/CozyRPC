@@ -110,6 +110,7 @@ body {
 
 .container label {
     margin-top: 25px;
+    font-size: 18px;
 }
 
 .sContainer {
@@ -199,3 +200,61 @@ body {
     margin-left: 5px;
 }
 
+.varModal {
+    font-family: "Work Sans", sans-serif;
+    background-color: #151515;
+    border: none;
+    width: 600px;
+    height: 300px;
+    color: white;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.varModal .varDescription {
+    font-size: 15px;
+}
+
+.varModal .varModalClose {
+    color: white;
+    font-size: 25px;
+    border: none;
+    float: right;
+    background-color: transparent;
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    margin-top: -55px;
+}
+
+.varModal .varModalClose:hover {
+    background-color: red;
+}
+
+.varModalHeader {
+    margin-top: -30px;
+}
+
+.varModal .varHighlight {
+    color: palevioletred;
+    margin-bottom: 5px;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+   
+::-webkit-scrollbar-track {
+    background: #1c1c1c;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+  
+::-webkit-scrollbar-thumb {
+    background: #252525;
+    border-radius: 10px;
+}
+  
+::-webkit-scrollbar-thumb:hover {
+    background: #303030;
+}
