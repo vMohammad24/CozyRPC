@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="../../css/general.css" />
+<html>
+
+<head>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>CozyRPC</title>
+	<link href="../../css/style.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="../../css/header.css" />
-    <link rel="stylesheet" href="../../css/desktop.css" />
-    <title>CozyRPC</title>
-  </head>
-
-  <body class="desktop">
-    <!-- -------------------------------- Header ------------------------------- -->
-
-    <header id="header" class="app-header">
-      <!-- <img src="../../img/header_icon.svg" /> -->
+</head>
+<header id="header" class="app-header">
+      <!-- logo soon:tm: -->
       <h1>CozyRPC</h1>
       <div class="window-controls-group">
         <button
@@ -26,48 +28,51 @@
         <button id="closeButton" class="window-control window-control-close" />
       </div>
     </header>
+<body>
+    <div class="imageContainer">
+        <img id="navIcon1" class="navIcon" src="../../img/cs2.jpg">
+        <img id="navIcon2" class="navIcon" src="../../img/ow2.png">
+    </div>
+    <div class="outerContainer">
+        <div class="container">
+            <form class="rpcForm" method="dialog">
+                <label>Details</label>
+                <input class="input" id="rpcDetails">
 
-    <!-- --------------------------------- Main -------------------------------- -->
-    <main>
-      <div class="desktopTop">
-        <h1>CozyRPC - Configuration</h1>
-        <p>
-          Welcome to the Overwolf tutorial app for developers.<br />
-          Learn how to build an app by using one!
-        </p>
-        <div id="version"></div>
-      </div>
-    </main>
+                <label>State</label>
+                <input class="input" id="rpcState">
+                
+                <div class="buttonContainer">
+                    <button class="rpcButton" type="submit">Submit</button>
+            </form>
+                    <button class="modalButton" onclick="document.getElementById('modal').showModal()">Variables</button>
+                </div>
+        </div>
+        <div class="sContainer">
+            <div class="rpcProfile">
+                <img id="userAvatar" class="rpcAvatar" src="../../img/default.png">
+                <p id="username">Osama Bin Laden</p>
+            </div>
+            <div class="rpc">
+                <div class="innerRPC"></div>
+                <div class="rpcProfileDetails">
+                    <p id="rpcStatus" class="rpcStatus">Playing</p>
+                </div>
+                <div class="presence">
+                    <img class="presenceImage" src="../../img/ow2.png">
+                    <div class="gameDetails">
+                        <b id="rpcStatusTitle" class="rpcStatusTitle">Overwatch 2</b>
+                        <p id="rpcStatusDetails" class="rpcStatusTitle">In Menus</p>
+                        <p id="rpcStatusTimestamp" class="rpcStatusTitle">00:00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <script>
-      // Standard Google Universal Analytics code
-      (function (i, s, o, g, r, a, m) {
-        i["GoogleAnalyticsObject"] = r;
-        (i[r] =
-          i[r] ||
-          function () {
-            (i[r].q = i[r].q || []).push(arguments);
-          }),
-          (i[r].l = 1 * new Date());
-        (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m);
-        // Note: https protocol here
-      })(
-        window,
-        document,
-        "script",
-        "https://www.google-analytics.com/analytics.js",
-        "ga"
-      );
-
-      ga("create", "UA-144253676-3", "auto");
-
-      // Removes failing protocol check. @see: http://stackoverflow.com/a/22152353/1958200
-      ga("set", "checkProtocolTask", function () {});
-      ga("require", "displayfeatures");
-      ga("send", "pageview", "/desktop.html");
-    </script>
-  </body>
+    <dialog id="modal">
+        <button class="modal-close" onclick="document.getElementById('modal').close()">×</button>
+        <h2>Variables</h2>
+    </dialog>
+</body>
 </html>
