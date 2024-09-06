@@ -10,47 +10,32 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>CozyRPC</title>
-	<link href="../../css/style.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="../../css/header.css" />
+	<link href="style.css" rel="stylesheet" type="text/css" />
 </head>
-<header id="header" class="app-header">
-      <!-- logo soon:tm: -->
-      <h1>CozyRPC</h1>
-      <div class="window-controls-group">
-        <button
-          id="minimizeButton"
-          class="window-control window-control-minimize"
-        />
-        <button
-          id="maximizeButton"
-          class="window-control window-control-maximize"
-        />
-        <button id="closeButton" class="window-control window-control-close" />
-      </div>
-    </header>
+
 <body>
     <div class="imageContainer">
-        <img id="navIcon1" class="navIcon" src="../../img/cs2.jpg">
-        <img id="navIcon2" class="navIcon" src="../../img/ow2.png">
+        <img id="navIcon1" class="navIcon" src="icons/counterstrike_icon.jpg">
+        <img id="navIcon2" class="navIcon" src="icons/overwatch_icon.png">
     </div>
     <div class="outerContainer">
         <div class="container">
             <form class="rpcForm" method="dialog">
-                <label>Details</label>
-                <input class="input" id="rpcDetails">
-
                 <label>State</label>
                 <input class="input" id="rpcState">
+
+                <label>Details</label>
+                <input class="input" id="rpcDetails">
                 
                 <div class="buttonContainer">
                     <button class="rpcButton" type="submit">Submit</button>
             </form>
-                    <button class="modalButton" onclick="document.getElementById('modal').showModal()">Variables</button>
+                    <button class="modalButton" onclick="document.getElementById('modalOW').showModal()">Variables</button>
                 </div>
         </div>
         <div class="sContainer">
             <div class="rpcProfile">
-                <img id="userAvatar" class="rpcAvatar" src="../../img/default.png">
+                <img id="userAvatar" class="rpcAvatar" src="icons/default.png">
                 <p id="username">Osama Bin Laden</p>
             </div>
             <div class="rpc">
@@ -59,20 +44,58 @@
                     <p id="rpcStatus" class="rpcStatus">Playing</p>
                 </div>
                 <div class="presence">
-                    <img class="presenceImage" src="../../img/ow2.png">
+                    <img class="presenceImage" src="icons/overwatch_icon.png">
                     <div class="gameDetails">
                         <b id="rpcStatusTitle" class="rpcStatusTitle">Overwatch 2</b>
-                        <p id="rpcStatusDetails" class="rpcStatusTitle">In Menus</p>
-                        <p id="rpcStatusTimestamp" class="rpcStatusTitle">00:00</p>
+                        <p id="rpcStatusState" class="rpcStatusTitle">In Menus</p>
+                        <p id="rpcStatusDetails" class="rpcStatusTitle">AFK</p>
+                        <p id="rpcStatusTimestamp" class="rpcStatusTitle">00:00:00</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <dialog id="modal">
-        <button class="modal-close" onclick="document.getElementById('modal').close()">×</button>
-        <h2>Variables</h2>
+    <dialog id="modalOW" class="varModal">
+        <div class="varModalHeader">
+            <p style="font-size: 25px;">Variables</p>
+            <button class="varModalClose" onclick="document.getElementById('modalOW').close()">×</button>
+        </div> 
+        <code class="varHighlight">{{kills}}</code><p class="varDescription">Displays how many kills you have.</p><br>
+        <code class="varHighlight">{{deaths}}</code><p class="varDescription">Displays how many times you've died.</p><br>
+        <code class="varHighlight">{{assists}}</code><p class="varDescription">Displays how many kill assists you have.</p><br>
+        <code class="varHighlight">{{hero_name}}</code><p class="varDescription">Displays how many kill assists you have.</p><br>
+        <code class="varHighlight">{{hero_role}}</code><p class="varDescription">Displays the role of your current hero.</p><br>
+        <code class="varHighlight">{{gamemode}}</code><p class="varDescription">Displays which gamemode you're playing.</p><br>
+        <code class="varHighlight">{{mapName}}</code><p class="varDescription">Displays which map you're playing on.</p><br>
+        <code class="varHighlight">{{healed}}</code><p class="varDescription">Displays how much you've healed.</p><br>
+        <code class="varHighlight">{{mitigated}}</code><p class="varDescription">Displays how much damage you've blocked (Mitigated).</p><br>
+        <code class="varHighlight">{{gameState}}</code><p class="varDescription">Displays the state of your current game.</p><br>
+        <code class="varHighlight">{{gameType}}</code><p class="varDescription">Displays which gamemode you're playing.</p>
     </dialog>
+
+    <dialog id="modalCS" class="varModal">
+        <div class="varModalHeader">
+            <p style="font-size: 25px;">Variables</p>
+            <button class="varModalClose" onclick="document.getElementById('modalCS').close()">×</button>
+        </div> 
+        <code class="varHighlight">{{kills}}</code><p class="varDescription">Displays how many kills you have.</p><br>
+        <code class="varHighlight">{{deaths}}</code><p class="varDescription">Displays how many times you've died.</p><br>
+        <code class="varHighlight">{{assists}}</code><p class="varDescription">Displays how many kill assists you have.</p><br>
+        <code class="varHighlight">{{mvps}}</code><p class="varDescription">Displays the most value players in your current game.</p><br>
+        <code class="varHighlight">{{score}}</code><p class="varDescription">Displays your current game score.</p><br>
+        <code class="varHighlight">{{ping}}</code><p class="varDescription">Displays your ping.</p><br>
+        <code class="varHighlight">{{hs}}</code><p class="varDescription">Displays your headshot accuracy.</p><br>
+        <code class="varHighlight">{{damage}}</code><p class="varDescription">Displays how much damage you've done.</p><br>
+        <code class="varHighlight">{{rank}}</code><p class="varDescription">Displays your competitive ranking.</p><br>
+        <code class="varHighlight">{{game_mode}}</code><p class="varDescription">Displays which gamemode you're playing.</p><br>
+        <code class="varHighlight">{{game_phase}}</code><p class="varDescription">Displays what phase your current game is in.</p><br>
+        <code class="varHighlight">{{round_phase}}</code><p class="varDescription">Displays what phase your round is in.</p><br>
+        <code class="varHighlight">{{mode_name}}</code><p class="varDescription">Displays what mode you're playing.</p><br>
+        <code class="varHighlight">{{map_name}}</code><p class="varDescription">Displays what map you're playing.</p><br>
+        <code class="varHighlight">{{round_number}}</code><p class="varDescription">Displays the current round of your game.</p>
+
+    </dialog>
+    <script src="/script.js"></script>
 </body>
 </html>
