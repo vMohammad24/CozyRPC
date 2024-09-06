@@ -1,0 +1,201 @@
+body {
+    background: #050505;
+    color: white;
+    font-family: "Work Sans", sans-serif;
+}
+
+.imageContainer {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    transition: transform 1s ease;
+    margin-top: 15px;
+}
+
+.imageContainer:hover {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+#navIcon1:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+#navIcon2:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+.outerContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    width: 400px;
+    height: 500px;
+    border-radius: 10px;
+}
+
+.container .rpcForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.container .input {
+    font-family: "Work Sans", sans-serif;
+    margin-top: 5px;
+    background-color: transparent;
+    border: none;
+    border-bottom: white 1px solid;
+    outline: none;
+    color: white;
+    width: 250px;
+    height: 25px;
+    transition: all 0.3s ease;
+}
+
+.container .input:focus {
+    background-color: #101010;
+    border-radius: 3px;
+    border-bottom: #101010 1px solid
+}
+
+.container .rpcButton {
+    font-family: "Work Sans", sans-serif;
+    background-color: #252525;
+    color: white;
+    border: none;
+    margin-top: 50px;
+    width: 250px;
+    height: 35px;
+    border-radius: 25px;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+.container .rpcButton:hover {
+    background-color: #303030;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.modalButton {
+    margin-top: 5px;
+    font-family: "Work Sans", sans-serif;
+    background-color: transparent;
+    color: white;
+    border: none;
+    font-size: 15px;
+}
+
+.modalButton:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.container label {
+    margin-top: 25px;
+}
+
+.sContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    background-color: #151515;
+    width: 500px;
+    height: 300px;
+    border-radius: 10px;
+    padding: 15px;
+    flex-wrap: wrap;
+    flex-shrink: 10;
+}
+
+.navIcon {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+
+.rpcAvatar {
+    border-radius: 50%;
+    height: 90px;
+    width: 90px;
+    position: relative;
+}
+
+.rpcProfile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.rpc {
+    display: flex;
+    align-self: flex-end;
+    justify-self: flex-end;
+    height: 125px;
+    width: 500px;
+    background-color: #252525;
+    margin-top: 83px;
+    border-radius: 10px;
+    flex-direction: column;
+}
+
+
+.rpcProfileDetails {
+    display: flex;
+    align-items: flex-start;
+    justify-items: flex-start;
+}
+
+.rpcStatus {
+    margin-left: 15px;
+    font-size: 15px;
+    display: flex;
+    color: white;
+}
+
+.rpcStatusTitle {
+    margin-left: 5px;
+    margin-bottom: -15px;
+    font-size: 15px;
+    display: flex;
+    color: white;
+}
+
+#rpcStatusTimestamp {
+    color: palegreen;
+}
+
+.presence {
+    display: flex;
+    flex-direction: row;
+}
+
+.presenceImage {
+    border-radius: 50%;
+    margin-left: 15px;
+    width: 64px;
+    height: 64px;
+}
+
+.gameDetails {
+    margin-left: 5px;
+}
+
