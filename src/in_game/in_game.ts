@@ -6,73 +6,10 @@ import {
 
 import { AppWindow } from "../AppWindow";
 import { kGamesFeatures, kHotkeys, kWindowNames } from "../consts";
+import { overwatchMaps, OWGameInfo, OWPlayer } from "../util/overwatch";
 import { DiscordRPCPlugin, LogLevel } from "../util/rpc";
 import { captilaizeString } from "../util/util";
 import WindowState = overwolf.windows.enums.WindowStateEx;
-
-// The window displayed in-game while a game is running.
-// It listens to all info events and to the game events listed in the consts.ts file
-// and writes them to the relevant log using <pre> tags.
-// The window also sets up Ctrl+F as the minimize/restore hotkey.
-// Like the background window, it also implements the Singleton design pattern.
-
-
-interface GameInfo {
-  gameType: string;
-  gameState: string;
-  mapName: string;
-  player: Player;
-}
-
-interface Player {
-  player_name: string;
-  is_local: boolean;
-  hero_name: string;
-  hero_role: string;
-  team: number;
-  kills: number;
-  deaths: number;
-  damage: number;
-  assists: number;
-  healed: number;
-  mitigated: number;
-  battlenet_tag: string;
-  is_teammate: boolean;
-}
-
-const overwatchMaps = {
-  3314: "Antarc Pebibsula",
-  2018: "Busan",
-  1645: "Ilios",
-  1634: "Lijiang Tower",
-  1719: "Lijiang Tower Lunar New Year",
-  1207: "Nepal",
-  1694: "Oasis",
-  2087: "Circuit Royal",
-  707: "Dorado",
-  2628: "Havana",
-  1878: "Junkertown",
-  2161: "Rialto",
-  1467: "Route 66",
-  3205: "Shambali Monastery",
-  388: "Watchpoint Gibraltar",
-  1886: "Blizzard World",
-  2651: "Blizzard World Winter",
-  1677: "Eichenwalde",
-  2036: "Eichenwalde Halloween",
-  687: "Hollywood",
-  1707: "Hollywood Halloween",
-  212: "Kings Row",
-  1713: "Kings Row Winter",
-  2892: "Midtown",
-  468: "Numbani",
-  2360: "Paraiso",
-  2868: "Coloesseo",
-  3411: "Esperanca",
-  2795: "New Queen Street",
-  3603: "New Junk City",
-  3390: "Suravasa"
-}
 
 
 class InGame extends AppWindow {
@@ -81,7 +18,7 @@ class InGame extends AppWindow {
   private _eventsLog: HTMLElement;
   private _infoLog: HTMLElement;
   private rpc: DiscordRPCPlugin;
-  private gameInfo: GameInfo;
+  private gameInfo: OWGameInfo;
   private battleTag: string;
   private constructor() {
     super(kWindowNames.inGame);
@@ -130,7 +67,7 @@ class InGame extends AppWindow {
         player_name: null,
         team: null
       }
-    } as GameInfo;
+    } as OWGameInfo;
   }
 
   private updateActivity() {
@@ -215,7 +152,7 @@ class InGame extends AppWindow {
     // change roster_0 to scan for every roser until it gets the local player
     if (info.roster) {
       for (const r in info.roster) {
-        const roster = JSON.parse(info.roster[r]) as Player;
+        const roster = JSON.parse(info.roster[r]) as OWPlayer;
         if (roster.is_local) {
           this.gameInfo.player = roster;
           this.battleTag = roster.battlenet_tag;

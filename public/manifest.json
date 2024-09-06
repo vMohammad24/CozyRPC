@@ -27,8 +27,8 @@
     },
     "start_window": "background",
     "hotkeys": {
-      "sample_app_ts_showhide": {
-        "title": "Show/Hide In-Game Window",
+      "debug_menu": {
+        "title": "Show/Hide CozyRPC Debug menu",
         "action-type": "toggle",
         "default": "Ctrl+F"
       }
@@ -72,7 +72,7 @@
         "file": "in_game.html",
         "in_game_only": true,
         "focus_game_takeover": "ReleaseOnHidden",
-        "focus_game_takeover_release_hotkey": "sample_app_ts_showhide",
+        "focus_game_takeover_release_hotkey": "debug_menu",
         "resizable": true,
         "transparent": true,
         "override_on_update": true,
@@ -89,20 +89,8 @@
     "game_targeting": {
       "type": "dedicated",
       "game_ids": [
-        21216,
-        7764,
-        5426,
-        21634,
-        8032,
         10844,
-        10906,
-        10826,
-        21404,
-        7212,
-        21640,
-        7314,
-        21626,
-        8954
+        7764
       ]
     },
     "game_events": [
@@ -126,20 +114,8 @@
         "event": "GameLaunch",
         "event_data": {
           "game_ids": [
-            21216,
-            7764,
-            5426,
-            21634,
-            8032,
             10844,
-            10906,
-            10826,
-            21404,
-            7212,
-            21640,
-            7314,
-            21626,
-            8954
+            7764
           ]
         },
         "start_minimized": true
