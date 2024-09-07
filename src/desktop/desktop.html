@@ -10,17 +10,33 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>CozyRPC</title>
-	<link href="style.css" rel="stylesheet" type="text/css" />
-</head>
+	<link href="../../css/style.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../../css/header.css" />
 
+</head>
+<header id="header" class="app-header">
+      <!-- logo soon:tm: -->
+      <h1>CozyRPC</h1>
+      <div class="window-controls-group">
+        <button
+          id="minimizeButton"
+          class="window-control window-control-minimize"
+        />
+        <button
+          id="maximizeButton"
+          class="window-control window-control-maximize"
+        />
+        <button id="closeButton" class="window-control window-control-close" />
+      </div>
+    </header>
 <body>
     <div class="imageContainer">
-        <img id="navIcon1" class="navIcon" src="icons/counterstrike_icon.jpg">
-        <img id="navIcon2" class="navIcon" src="icons/overwatch_icon.png">
+        <img id="cs2" class="navIcon" src="../../img/cs2.jpg">
+        <img id="ow2" class="navIcon" src="../../img/ow2.png">
     </div>
     <div class="outerContainer">
         <div class="container">
-            <form class="rpcForm" method="dialog">
+            <form class="rpcForm" id="rpcForm" method="dialog">
                 <label>State</label>
                 <input class="input" id="rpcState">
 
@@ -30,12 +46,12 @@
                 <div class="buttonContainer">
                     <button class="rpcButton" type="submit">Submit</button>
             </form>
-                    <button class="modalButton" onclick="document.getElementById('modalOW').showModal()">Variables</button>
+                    <button class="modalButton" id="openModal">Variables</button>
                 </div>
         </div>
         <div class="sContainer">
             <div class="rpcProfile">
-                <img id="userAvatar" class="rpcAvatar" src="icons/default.png">
+                <img id="userAvatar" class="rpcAvatar" src="../../img/default.png">
                 <p id="username">Osama Bin Laden</p>
             </div>
             <div class="rpc">
@@ -44,11 +60,11 @@
                     <p id="rpcStatus" class="rpcStatus">Playing</p>
                 </div>
                 <div class="presence">
-                    <img class="presenceImage" src="icons/overwatch_icon.png">
+                    <img class="presenceImage" id="rpcImage" src="../../img/ow2.png">
                     <div class="gameDetails">
                         <b id="rpcStatusTitle" class="rpcStatusTitle">Overwatch 2</b>
-                        <p id="rpcStatusState" class="rpcStatusTitle">In Menus</p>
-                        <p id="rpcStatusDetails" class="rpcStatusTitle">AFK</p>
+                        <p id="rpcStatusState" class="rpcStatusTitle">State</p>
+                        <p id="rpcStatusDetails" class="rpcStatusTitle">Details...</p>
                         <p id="rpcStatusTimestamp" class="rpcStatusTitle">00:00:00</p>
                     </div>
                 </div>
@@ -56,10 +72,10 @@
         </div>
     </div>
 
-    <dialog id="modalOW" class="varModal">
+    <dialog id="ow2Modal" class="varModal">
         <div class="varModalHeader">
             <p style="font-size: 25px;">Variables</p>
-            <button class="varModalClose" onclick="document.getElementById('modalOW').close()">×</button>
+            <button class="varModalClose" onclick="document.getElementById('ow2Modal').close()">×</button>
         </div> 
         <code class="varHighlight">{{kills}}</code><p class="varDescription">Displays how many kills you have.</p><br>
         <code class="varHighlight">{{deaths}}</code><p class="varDescription">Displays how many times you've died.</p><br>
@@ -74,10 +90,10 @@
         <code class="varHighlight">{{gameType}}</code><p class="varDescription">Displays which gamemode you're playing.</p>
     </dialog>
 
-    <dialog id="modalCS" class="varModal">
+    <dialog id="cs2Modal" class="varModal">
         <div class="varModalHeader">
             <p style="font-size: 25px;">Variables</p>
-            <button class="varModalClose" onclick="document.getElementById('modalCS').close()">×</button>
+            <button class="varModalClose" onclick="document.getElementById('cs2Modal').close()">×</button>
         </div> 
         <code class="varHighlight">{{kills}}</code><p class="varDescription">Displays how many kills you have.</p><br>
         <code class="varHighlight">{{deaths}}</code><p class="varDescription">Displays how many times you've died.</p><br>
@@ -96,6 +112,5 @@
         <code class="varHighlight">{{round_number}}</code><p class="varDescription">Displays the current round of your game.</p>
 
     </dialog>
-    <script src="/script.js"></script>
 </body>
 </html>

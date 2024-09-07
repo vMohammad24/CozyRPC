@@ -6,7 +6,7 @@ import {
 
 import { AppWindow } from "../AppWindow";
 import { kGamesFeatures, kHotkeys, kWindowNames } from "../consts";
-import { overwatchMaps, OWGameInfo, OWPlayer } from "../util/overwatch";
+import { formatVariables, overwatchMaps, OWGameInfo, OWPlayer } from "../util/overwatch";
 import { DiscordRPCPlugin, LogLevel } from "../util/rpc";
 import { captilaizeString } from "../util/util";
 import WindowState = overwolf.windows.enums.WindowStateEx;
@@ -18,7 +18,7 @@ class InGame extends AppWindow {
   private _eventsLog: HTMLElement;
   private _infoLog: HTMLElement;
   private rpc: DiscordRPCPlugin;
-  private gameInfo: OWGameInfo;
+  private owInfo: OWGameInfo;
   private battleTag: string;
   private constructor() {
     super(kWindowNames.inGame);
@@ -45,10 +45,16 @@ class InGame extends AppWindow {
       })
       this.updateActivity();
     })
+    overwolf.games.tracked.onTerminated.addListener((r) => {
+      this.rpc.dispose((r) => {
+        console.log(r)
+      })
+    })
+
   }
 
   private resetInfo() {
-    this.gameInfo = {
+    this.owInfo = {
       gameState: null,
       gameType: null,
       mapName: null,
@@ -71,8 +77,12 @@ class InGame extends AppWindow {
   }
 
   private updateActivity() {
-    const { player, gameType, gameState, mapName } = this.gameInfo;
+    const { player, gameType, gameState, mapName } = this.owInfo;
     // this.logLine(this._infoLog, player, true);
+    this.logLine(this._infoLog, `
+      State: ${localStorage.getItem('state')},
+      Details: ${localStorage.getItem('details')},
+      `, true);
     this.logLine(this._infoLog, "Updating RPC", true);
     if (!player) {
       this.logLine(this._infoLog, "Tried updating while player is null", false);
@@ -81,7 +91,8 @@ class InGame extends AppWindow {
       player.hero_name = ""
     }
     const inMenus = gameState == "match_ended" || player.kills == null;
-    let details = (() => {
+    this.owInfo.gameType = (() => {
+      console.log(gameState)
       if (gameState == "match_in_progress") {
         return captilaizeString(gameType);
       }
@@ -91,8 +102,8 @@ class InGame extends AppWindow {
       return "";
     })();
     // this.logLine(this._eventsLog, `Map: ${mapName}`, true);
-    this.rpc.updatePresenceWithButtonsArray(details || "In game",
-      inMenus ? "" : `KDA: ${player.kills}, ${player.deaths}, ${player.assists}`,
+    this.rpc.updatePresenceWithButtonsArray(inMenus ? this.owInfo.gameType : formatVariables(localStorage.getItem('state'), this.owInfo),
+      inMenus ? "" : formatVariables(localStorage.getItem('details'), this.owInfo),
       'overwatch',
       `On ${mapName || "Earth"}`,
       inMenus ? "" : player.hero_name.toLowerCase(),
@@ -135,7 +146,7 @@ class InGame extends AppWindow {
     if (info.game_info) {
       const { game_state } = info.game_info;
       if (game_state && (game_state == "match_ended" || game_state == "match_in_progress")) {
-        this.gameInfo.gameState = game_state
+        this.owInfo.gameState = game_state
         if (game_state == "match_ended") {
           this.resetInfo()
         }
@@ -144,9 +155,9 @@ class InGame extends AppWindow {
     if (info.match_info) {
       const { game_type, map } = info.match_info;
       if (game_type)
-        this.gameInfo.gameType = captilaizeString(game_type)
+        this.owInfo.gameType = captilaizeString(game_type)
       if (map) {
-        this.gameInfo.mapName = overwatchMaps[map]
+        this.owInfo.mapName = overwatchMaps[map]
       }
     }
     // change roster_0 to scan for every roser until it gets the local player
@@ -154,13 +165,13 @@ class InGame extends AppWindow {
       for (const r in info.roster) {
         const roster = JSON.parse(info.roster[r]) as OWPlayer;
         if (roster.is_local) {
-          this.gameInfo.player = roster;
+          this.owInfo.player = roster;
           this.battleTag = roster.battlenet_tag;
           this.logLine(this._eventsLog, "Updated local player", true)
           break;
         } else {
           if (roster.battlenet_tag == this.battleTag) {
-            this.gameInfo.player = roster;
+            this.owInfo.player = roster;
             this.logLine(this._eventsLog, "Updated local player(2)", true)
           }
         }
