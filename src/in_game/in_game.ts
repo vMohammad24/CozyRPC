@@ -6,6 +6,7 @@ import {
 
 import { AppWindow } from "../AppWindow";
 import { kGamesFeatures, kHotkeys, kWindowNames } from "../consts";
+import { CSGameInfo } from "../util/counterstrike";
 import { formatVariables, overwatchMaps, OWGameInfo, OWPlayer } from "../util/overwatch";
 import { DiscordRPCPlugin, LogLevel } from "../util/rpc";
 import { captilaizeString } from "../util/util";
@@ -19,41 +20,16 @@ class InGame extends AppWindow {
   private _infoLog: HTMLElement;
   private rpc: DiscordRPCPlugin;
   private owInfo: OWGameInfo;
+  private csInfo: CSGameInfo;
   private battleTag: string;
+  private steamId: string;
+  private clientId: string;
   private constructor() {
     super(kWindowNames.inGame);
     this._eventsLog = document.getElementById('eventsLog');
     this._infoLog = document.getElementById('infoLog');
+    this.executeOn((() => { this.clientId = "1279931263897042984"; }).bind(this), (() => { this.clientId = "1281925581159530517"; }).bind(this))
     this.battleTag = "";
-    this.resetInfo();
-    this.setToggleHotkeyBehavior();
-    this.setToggleHotkeyText();
-    overwolf.extensions.current.getExtraObject("DiscordRPCPlugin", (r) => {
-      this.rpc = r.object
-      this.rpc.initialize("1279931263897042984", LogLevel.Info, (success) => {
-        if (success) {
-          console.log("Discord RPC Plugin initialized successfully!");
-        } else {
-          console.error("Failed to initialize Discord RPC Plugin.");
-        }
-      });
-      this.rpc.onClientReady.addListener((c) => {
-        this.logLine(this._infoLog, `RPC Connected`, true)
-      })
-      this.rpc.onClientError.addListener((c) => {
-        this.logLine(this._infoLog, `ERRORRRRR: ${JSON.stringify(c)}`, true)
-      })
-      this.updateActivity();
-    })
-    overwolf.games.tracked.onTerminated.addListener((r) => {
-      this.rpc.dispose((r) => {
-        console.log(r)
-      })
-    })
-
-  }
-
-  private resetInfo() {
     this.owInfo = {
       gameState: null,
       gameType: null,
@@ -74,14 +50,142 @@ class InGame extends AppWindow {
         team: null
       }
     } as OWGameInfo;
+    this.resetInfo();
+    this.setToggleHotkeyBehavior();
+    this.setToggleHotkeyText();
+    overwolf.extensions.current.getExtraObject("DiscordRPCPlugin", (r) => {
+      this.rpc = r.object
+      this.rpc.initialize(this.clientId, LogLevel.Info, (success) => {
+        if (success) {
+          console.log("Discord RPC Plugin initialized successfully!");
+        } else {
+          console.error("Failed to initialize Discord RPC Plugin.");
+        }
+      });
+      this.rpc.onClientReady.addListener((c) => {
+        this.logLine(this._infoLog, `RPC Connected`, true)
+      })
+      this.rpc.onClientError.addListener((c) => {
+        this.logLine(this._infoLog, `ERRORRRRR: ${JSON.stringify(c)}`, true)
+      })
+      this.executeOn(this.updateActivityOW.bind(this), this.updateActivityCS.bind(this))
+    })
+
+
   }
 
-  private updateActivity() {
+  private executeOn(ow: Function, cs: Function) {
+    overwolf.games.getRunningGameInfo((info) => {
+      switch (info.classId) {
+        case 10844:
+          console.log(`Running ${ow.toString()} for Overwatch`)
+          ow();
+          break;
+        case 22730:
+          console.log(`Running ${cs.toString()} for Counter Strike`)
+          cs();
+          break;
+      }
+    })
+  }
+
+  private resetInfo() {
+    this.executeOn(() => {
+      this.owInfo = {
+        gameState: null,
+        gameType: null,
+        mapName: null,
+        player: {
+          assists: null,
+          battlenet_tag: null,
+          damage: null,
+          deaths: null,
+          healed: null,
+          hero_name: null,
+          hero_role: null,
+          is_local: false,
+          is_teammate: false,
+          kills: null,
+          mitigated: null,
+          player_name: null,
+          team: null
+        }
+      } as OWGameInfo;
+    }, () => {
+      this.csInfo = {
+        gameState: null,
+        gameType: null,
+        mapName: null,
+        player: {
+          assists: null,
+          battlenet_tag: null,
+          damage: null,
+          deaths: null,
+          healed: null,
+          hero_name: null,
+          hero_role: null,
+          is_local: false,
+          is_teammate: false,
+          kills: null,
+          mitigated: null,
+          player_name: null,
+          team: null
+        }
+      } as CSGameInfo;
+    })
+  }
+
+
+  private updateActivityCS() {
     const { player, gameType, gameState, mapName } = this.owInfo;
     // this.logLine(this._infoLog, player, true);
+    const csState = localStorage.getItem('cs2State');
+    const owDetails = localStorage.getItem('cs2Details');
     this.logLine(this._infoLog, `
-      State: ${localStorage.getItem('state')},
-      Details: ${localStorage.getItem('details')},
+      State: ${csState},
+            Details: ${owDetails},
+            `, true);
+    this.logLine(this._infoLog, "Updating RPC", true);
+    if (!player) {
+      this.logLine(this._infoLog, "Tried updating while player is null", false);
+    }
+    if (!player.hero_name) {
+      player.hero_name = ""
+    }
+    const inMenus = gameState == "match_ended" || player.kills == null;
+    this.owInfo.gameType = (() => {
+      console.log(gameState)
+      if (gameState == "match_in_progress") {
+        return captilaizeString(gameType);
+      }
+      if (inMenus) {
+        return "In Menus"
+      }
+      return "";
+    })();
+    // this.logLine(this._eventsLog, `Map: ${ mapName }`, true);
+    this.rpc.updatePresenceWithButtonsArray(inMenus ? this.owInfo.gameType : (csState ? formatVariables(csState, this.owInfo) : this.owInfo.gameType),
+      inMenus ? "" : (owDetails ? formatVariables(owDetails, this.owInfo) : `KDA: ${player.kills} / ${player.deaths} / ${player.assists}`),
+      'counterstrike',
+      `On ${mapName || "Earth"}`,
+      inMenus ? "" : player.hero_name.toLowerCase(),
+      inMenus ? "" : `Playing as ${captilaizeString(player.hero_name)} `,
+      true, 0, "",
+      (c) => {
+        if (!c.success) {
+          this.logLine(this._infoLog, c, true)
+        }
+      });
+  }
+
+  private updateActivityOW() {
+    const { player, gameType, gameState, mapName } = this.owInfo || {};
+    this.logLine(this._infoLog, this.owInfo, true);
+    const owState = localStorage.getItem('ow2State');
+    const owDetails = localStorage.getItem('ow2Details');
+    this.logLine(this._infoLog, `
+      State: ${owState},
+      Details: ${owDetails},
       `, true);
     this.logLine(this._infoLog, "Updating RPC", true);
     if (!player) {
@@ -101,13 +205,13 @@ class InGame extends AppWindow {
       }
       return "";
     })();
-    // this.logLine(this._eventsLog, `Map: ${mapName}`, true);
-    this.rpc.updatePresenceWithButtonsArray(inMenus ? this.owInfo.gameType : formatVariables(localStorage.getItem('state'), this.owInfo),
-      inMenus ? "" : formatVariables(localStorage.getItem('details'), this.owInfo),
+    // this.logLine(this._eventsLog, `Map: ${ mapName } `, true);
+    this.rpc.updatePresenceWithButtonsArray(inMenus ? this.owInfo.gameType : (owState ? formatVariables(owState, this.owInfo) : this.owInfo.gameType),
+      inMenus ? "" : (owDetails ? formatVariables(owDetails, this.owInfo) : `KDA: ${player.kills} /${player.deaths}/${player.assists} `),
       'overwatch',
-      `On ${mapName || "Earth"}`,
+      `On ${mapName || "Earth"} `,
       inMenus ? "" : player.hero_name.toLowerCase(),
-      inMenus ? "" : `Playing as ${captilaizeString(player.hero_name)}`,
+      inMenus ? "" : `Playing as ${captilaizeString(player.hero_name)} `,
       true, 0, "",
       (c) => {
         if (!c.success) {
@@ -143,6 +247,7 @@ class InGame extends AppWindow {
   }
 
   private onInfoUpdates(info) {
+    // this.logLine(this._eventsLog, info, false);
     if (info.game_info) {
       const { game_state } = info.game_info;
       if (game_state && (game_state == "match_ended" || game_state == "match_in_progress")) {
@@ -177,7 +282,7 @@ class InGame extends AppWindow {
         }
       }
     }
-    this.updateActivity();
+    this.executeOn(this.updateActivityOW.bind(this), this.updateActivityCS.bind(this))
     // this.logLine(this._infoLog, this.gameInfo, true);s
   }
 

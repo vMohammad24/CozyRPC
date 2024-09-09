@@ -1,7 +1,7 @@
 export const kGamesFeatures = new Map<number, string[]>([
   // CSGO
   [
-    7764,
+    22730,
     [
       'match_info',
       'kill',

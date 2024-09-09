@@ -3,8 +3,6 @@ export interface CSGameInfo {
     gameState: string;
     mapName: string;
     player: CSPlayer;
-    details: string;
-    state: string;
 }
 
 export interface CSPlayer {

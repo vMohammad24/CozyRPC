@@ -74,6 +74,7 @@ class BackgroundController {
   }
 
   private toggleWindows(info: RunningGameInfo) {
+    console.log(info)
     if (!info || !this.isSupportedGame(info)) {
       return;
     }
