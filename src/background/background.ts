@@ -19,7 +19,6 @@ class BackgroundController {
   private static _instance: BackgroundController;
   private _windows: Record<string, OWWindow> = {};
   private _gameListener: OWGameListener;
-
   private constructor() {
     // Populating the background controller's window dictionary
     this._windows[kWindowNames.desktop] = new OWWindow(kWindowNames.desktop);
@@ -74,7 +73,6 @@ class BackgroundController {
   }
 
   private toggleWindows(info: RunningGameInfo) {
-    console.log(info)
     if (!info || !this.isSupportedGame(info)) {
       return;
     }

@@ -1,4 +1,5 @@
 import { OWWindow } from "@overwolf/overwolf-api-ts";
+import { LogLevel } from "./util/rpc";
 
 // A base class for the app's foreground windows.
 // Sets the modal and drag behaviors, which are shared accross the desktop and in-game windows.
@@ -44,6 +45,18 @@ export class AppWindow {
     const rpcImage = document.getElementById('rpcImage') as HTMLImageElement;
     const gameButtons = document.getElementsByClassName('navIcon');
     const rpcTitle = document.getElementById('rpcStatusTitle');
+    const username = document.getElementById('username');
+
+    overwolf.extensions.current.getExtraObject("DiscordRPCPlugin", (r) => {
+      const rpc = r.object
+      rpc.initialize("1279931263897042984", LogLevel.None, (user) => {
+
+      })
+      rpc.onClientReady.addListener((user) => {
+        username.innerText = user.user.Username;
+      })
+
+    })
     // consts
     const games = [
       {

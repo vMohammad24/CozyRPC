@@ -13,12 +13,12 @@ import { captilaizeString } from "../util/util";
 import WindowState = overwolf.windows.enums.WindowStateEx;
 
 
-class InGame extends AppWindow {
-  private static _instance: InGame;
+export class InGame extends AppWindow {
+  public rpc: DiscordRPCPlugin;
+  public static _instance: InGame;
   private _gameEventsListener: OWGamesEvents;
   private _eventsLog: HTMLElement;
   private _infoLog: HTMLElement;
-  private rpc: DiscordRPCPlugin;
   private owInfo: OWGameInfo;
   private csInfo: CSGameInfo;
   private battleTag: string;
@@ -70,8 +70,11 @@ class InGame extends AppWindow {
       })
       this.executeOn(this.updateActivityOW.bind(this), this.updateActivityCS.bind(this))
     })
-
-
+    window.onbeforeunload = () => {
+      this.rpc.dispose((r) => {
+        console.log("Disposed RPC", r)
+      })
+    }
   }
 
   private async executeOn(ow: Function, cs: Function) {
@@ -121,7 +124,7 @@ class InGame extends AppWindow {
           kills: null,
           money: null,
           ping: null,
-          player_name: null,
+          playerName: null,
           team: null
         }
       } as CSGameInfo;
@@ -145,7 +148,7 @@ class InGame extends AppWindow {
     const inMenus = false;
     // this.logLine(this._eventsLog, `Map: ${ mapName }`, true);
     this.rpc.updatePresenceWithButtonsArray(inMenus ? this.csInfo.gameMode : (csState ? csFormatVariables(csState, this.csInfo) : captilaizeString(this.csInfo.gameMode + " " + this.csInfo.roundNumber)),
-      inMenus ? "" : (csDetails ? csFormatVariables(csDetails, this.csInfo) : `KDA: ${player.kills} / ${player.deaths} / ${player.assists}`),
+      inMenus ? "" : (csDetails ? csFormatVariables(csDetails, this.csInfo) : `KDA: ${player.kills}/${player.deaths}/${player.assists}`),
       'counterstrike',
       `On ${mapName || "Earth"}`,
       "",
@@ -176,7 +179,6 @@ class InGame extends AppWindow {
     }
     const inMenus = gameState == "match_ended" || player.kills == null;
     this.owInfo.gameType = (() => {
-      console.log(gameState)
       if (gameState == "match_in_progress") {
         return captilaizeString(gameType);
       }
@@ -187,7 +189,7 @@ class InGame extends AppWindow {
     })();
     // this.logLine(this._eventsLog, `Map: ${ mapName } `, true);
     this.rpc.updatePresenceWithButtonsArray(inMenus ? this.owInfo.gameType : (owState ? owFormatVariables(owState, this.owInfo) : this.owInfo.gameType),
-      inMenus ? "" : (owDetails ? owFormatVariables(owDetails, this.owInfo) : `KDA: ${player.kills} /${player.deaths}/${player.assists} `),
+      inMenus ? "" : (owDetails ? owFormatVariables(owDetails, this.owInfo) : `KDA: ${player.kills}/${player.deaths}/${player.assists}`),
       'overwatch',
       `On ${mapName || "Earth"} `,
       inMenus ? "" : player.hero_name.toLowerCase(),
@@ -259,6 +261,7 @@ class InGame extends AppWindow {
           if (roster.battlenet_tag == this.battleTag) {
             this.owInfo.player = roster;
             this.logLine(this._eventsLog, "Updated local player(2)", true)
+            break;
           }
         }
       }
@@ -274,8 +277,8 @@ class InGame extends AppWindow {
         this.csInfo.roundNumber = live_data.round_number;
         this.csInfo.gameMode = live_data.mode_name;
         this.csInfo.mapName = live_data.map_name;
+        this.csInfo.gamePhase = live_data.game_phase;
         this.steamId = live_data.steam_id;
-        console.log(`Map: ${this.csInfo.mapName}, Round: ${this.csInfo.roundNumber}`)
       }
     }
     if (info.match_info) {
@@ -285,7 +288,6 @@ class InGame extends AppWindow {
           const roster = JSON.parse(match_info[r]);
           if (!roster) continue;
           if ((roster.steamid == this.steamId)) {
-            console.log(roster)
             const player: CSPlayer = {
               assists: roster.assists,
               kills: roster.kills,
@@ -294,7 +296,7 @@ class InGame extends AppWindow {
               hs: parseInt(roster.hs),
               money: parseInt(roster.money),
               ping: parseInt(roster.ping),
-              player_name: roster.nickname,
+              playerName: roster.nickname,
               team: roster.team
             }
             this.csInfo.player = player;
@@ -321,7 +323,6 @@ class InGame extends AppWindow {
     const toggleInGameWindow = async (
       hotkeyResult: overwolf.settings.hotkeys.OnPressedEvent
     ): Promise<void> => {
-      console.log(`pressed hotkey for ${hotkeyResult.name}`);
       const inGameState = await this.getWindowState();
 
       if (inGameState.window_state_ex === WindowState.normal ||

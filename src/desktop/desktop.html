@@ -38,10 +38,10 @@
         <div class="container">
             <form class="rpcForm" id="rpcForm" method="dialog">
                 <label>State</label>
-                <input class="input" id="rpcState">
+                <input minlength="2" max="32" class="input" id="rpcState">
 
                 <label>Details</label>
-                <input class="input" id="rpcDetails">
+                <input minlength="2" max="32" class="input" id="rpcDetails">
                 
                 <div class="buttonContainer">
                     <button class="rpcButton" type="submit">Submit</button>
@@ -52,7 +52,7 @@
         <div class="sContainer">
             <div class="rpcProfile">
                 <img id="userAvatar" class="rpcAvatar" src="../../img/default.png">
-                <p id="username">Osama Bin Laden</p>
+                <p id="username">Cool guy</p>
             </div>
             <div class="rpc">
                 <div class="innerRPC"></div>
@@ -98,19 +98,17 @@
         <code class="varHighlight">{kills}</code><p class="varDescription">Displays how many kills you have.</p><br>
         <code class="varHighlight">{deaths}</code><p class="varDescription">Displays how many times you've died.</p><br>
         <code class="varHighlight">{assists}</code><p class="varDescription">Displays how many kill assists you have.</p><br>
-        <code class="varHighlight">{mvps}</code><p class="varDescription">Displays the most value players in your current game.</p><br>
-        <code class="varHighlight">{score}</code><p class="varDescription">Displays your current game score.</p><br>
+        <!-- <code class="varHighlight">{score}</code><p class="varDescription">Displays your current game score.</p><br> -->
         <code class="varHighlight">{ping}</code><p class="varDescription">Displays your ping.</p><br>
         <code class="varHighlight">{hs}</code><p class="varDescription">Displays your headshot accuracy.</p><br>
         <code class="varHighlight">{damage}</code><p class="varDescription">Displays how much damage you've done.</p><br>
         <code class="varHighlight">{rank}</code><p class="varDescription">Displays your competitive ranking.</p><br>
-        <code class="varHighlight">{game_mode}</code><p class="varDescription">Displays which gamemode you're playing.</p><br>
-        <code class="varHighlight">{game_phase}</code><p class="varDescription">Displays what phase your current game is in.</p><br>
-        <code class="varHighlight">{round_phase}</code><p class="varDescription">Displays what phase your round is in.</p><br>
+        <code class="varHighlight">{gameMode}</code><p class="varDescription">Displays which gamemode you're playing.</p><br>
+        <code class="varHighlight">{gamePhase}</code><p class="varDescription">Displays what phase your current game is in.</p><br>
+        <!-- <code class="varHighlight">{round_phase}</code><p class="varDescription">Displays what phase your round is in.</p><br> -->
         <code class="varHighlight">{mode_name}</code><p class="varDescription">Displays what mode you're playing.</p><br>
-        <code class="varHighlight">{map_name}</code><p class="varDescription">Displays what map you're playing.</p><br>
-        <code class="varHighlight">{round_number}</code><p class="varDescription">Displays the current round of your game.</p>
-
+        <code class="varHighlight">{mapName}</code><p class="varDescription">Displays what map you're playing.</p><br>
+        <code class="varHighlight">{roundNumber}</code><p class="varDescription">Displays the current round of your game.</p>
     </dialog>
 </body>
 </html>

@@ -39,10 +39,7 @@
     "externally_connectable": {
       "matches": [
         "http://*.overwolf.com",
-        "https://*.overwolf.com",
-        "https://*.google-analytics.com",
-        "http://*.google-analytics.com",
-        "https://www.googleapis.com"
+        "https://*.overwolf.com"
       ]
     },
     "force_browser": "user",
@@ -89,57 +86,21 @@
     "game_targeting": {
       "type": "dedicated",
       "game_ids": [
-        21216,
-        22730,
-        5426,
-        21634,
-        8032,
         10844,
-        10906,
-        10826,
-        21404,
-        7212,
-        21640,
-        7314,
-        21626,
-        8954
+        22730
       ]
     },
     "game_events": [
-      21216,
-      22730,
-      5426,
-      21634,
-      8032,
       10844,
-      10906,
-      10826,
-      21404,
-      7212,
-      21640,
-      7314,
-      21626,
-      8954
+      22730
     ],
     "launch_events": [
       {
         "event": "GameLaunch",
         "event_data": {
           "game_ids": [
-            21216,
-            22730,
-            5426,
-            21634,
-            8032,
             10844,
-            10906,
-            10826,
-            21404,
-            7212,
-            21640,
-            7314,
-            21626,
-            8954
+            22730
           ]
         },
         "start_minimized": true

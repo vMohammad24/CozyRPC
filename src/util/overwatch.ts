@@ -1,21 +1,14 @@
 import { captilaizeString } from "./util";
 
 export function owFormatVariables(text: string, info: OWGameInfo) {
-    const words = text.split(" ");
-    for (let i = 0; i < words.length; i++) {
-        if (!(words[i].endsWith("}") && words[i].startsWith("{"))) continue;
-        const word = words[i].replace(/{(.*?)}/g, (a, b) => b);
-        if (word in info) {
-            if (typeof info[word] == "object") continue;
-            words[i] = captilaizeString(info[word])
-            continue;
+    return text.replace(/{(.*?)}/g, (match, key) => {
+        if (key in info && typeof info[key] !== "object") {
+            return captilaizeString(info[key]);
+        } else if (key in info.player) {
+            return captilaizeString(info.player[key]);
         }
-        if (word in info.player) {
-            words[i] = captilaizeString(info.player[word])
-            continue;
-        }
-    }
-    return words.join(" ");
+        return match;
+    });
 }
 
 export interface OWGameInfo {
