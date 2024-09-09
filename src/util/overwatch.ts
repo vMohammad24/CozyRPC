@@ -1,9 +1,8 @@
 import { captilaizeString } from "./util";
 
-export function formatVariables(text: string, info: OWGameInfo) {
+export function owFormatVariables(text: string, info: OWGameInfo) {
     const words = text.split(" ");
     for (let i = 0; i < words.length; i++) {
-        console.log(words[i])
         if (!(words[i].endsWith("}") && words[i].startsWith("{"))) continue;
         const word = words[i].replace(/{(.*?)}/g, (a, b) => b);
         if (word in info) {

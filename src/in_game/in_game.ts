@@ -6,8 +6,8 @@ import {
 
 import { AppWindow } from "../AppWindow";
 import { kGamesFeatures, kHotkeys, kWindowNames } from "../consts";
-import { CSGameInfo } from "../util/counterstrike";
-import { formatVariables, overwatchMaps, OWGameInfo, OWPlayer } from "../util/overwatch";
+import { csFormatVariables, CSGameInfo, CSPlayer } from "../util/counterstrike";
+import { overwatchMaps, owFormatVariables, OWGameInfo, OWPlayer } from "../util/overwatch";
 import { DiscordRPCPlugin, LogLevel } from "../util/rpc";
 import { captilaizeString } from "../util/util";
 import WindowState = overwolf.windows.enums.WindowStateEx;
@@ -74,19 +74,16 @@ class InGame extends AppWindow {
 
   }
 
-  private executeOn(ow: Function, cs: Function) {
-    overwolf.games.getRunningGameInfo((info) => {
-      switch (info.classId) {
-        case 10844:
-          console.log(`Running ${ow.toString()} for Overwatch`)
-          ow();
-          break;
-        case 22730:
-          console.log(`Running ${cs.toString()} for Counter Strike`)
-          cs();
-          break;
-      }
-    })
+  private async executeOn(ow: Function, cs: Function) {
+    const classId = await this.getCurrentGameClassId();
+    switch (classId) {
+      case 10844:
+        ow();
+        break;
+      case 22730:
+        cs();
+        break;
+    }
   }
 
   private resetInfo() {
@@ -113,21 +110,17 @@ class InGame extends AppWindow {
       } as OWGameInfo;
     }, () => {
       this.csInfo = {
-        gameState: null,
-        gameType: null,
         mapName: null,
+        gameMode: null,
+        roundNumber: null,
         player: {
           assists: null,
-          battlenet_tag: null,
           damage: null,
           deaths: null,
-          healed: null,
-          hero_name: null,
-          hero_role: null,
-          is_local: false,
-          is_teammate: false,
+          hs: null,
           kills: null,
-          mitigated: null,
+          money: null,
+          ping: null,
           player_name: null,
           team: null
         }
@@ -137,39 +130,26 @@ class InGame extends AppWindow {
 
 
   private updateActivityCS() {
-    const { player, gameType, gameState, mapName } = this.owInfo;
+    const { player, mapName } = this.csInfo;
     // this.logLine(this._infoLog, player, true);
     const csState = localStorage.getItem('cs2State');
-    const owDetails = localStorage.getItem('cs2Details');
+    const csDetails = localStorage.getItem('cs2Details');
     this.logLine(this._infoLog, `
       State: ${csState},
-            Details: ${owDetails},
+            Details: ${csDetails},
             `, true);
     this.logLine(this._infoLog, "Updating RPC", true);
     if (!player) {
       this.logLine(this._infoLog, "Tried updating while player is null", false);
     }
-    if (!player.hero_name) {
-      player.hero_name = ""
-    }
-    const inMenus = gameState == "match_ended" || player.kills == null;
-    this.owInfo.gameType = (() => {
-      console.log(gameState)
-      if (gameState == "match_in_progress") {
-        return captilaizeString(gameType);
-      }
-      if (inMenus) {
-        return "In Menus"
-      }
-      return "";
-    })();
+    const inMenus = false;
     // this.logLine(this._eventsLog, `Map: ${ mapName }`, true);
-    this.rpc.updatePresenceWithButtonsArray(inMenus ? this.owInfo.gameType : (csState ? formatVariables(csState, this.owInfo) : this.owInfo.gameType),
-      inMenus ? "" : (owDetails ? formatVariables(owDetails, this.owInfo) : `KDA: ${player.kills} / ${player.deaths} / ${player.assists}`),
+    this.rpc.updatePresenceWithButtonsArray(inMenus ? this.csInfo.gameMode : (csState ? csFormatVariables(csState, this.csInfo) : captilaizeString(this.csInfo.gameMode + " " + this.csInfo.roundNumber)),
+      inMenus ? "" : (csDetails ? csFormatVariables(csDetails, this.csInfo) : `KDA: ${player.kills} / ${player.deaths} / ${player.assists}`),
       'counterstrike',
       `On ${mapName || "Earth"}`,
-      inMenus ? "" : player.hero_name.toLowerCase(),
-      inMenus ? "" : `Playing as ${captilaizeString(player.hero_name)} `,
+      "",
+      "",
       true, 0, "",
       (c) => {
         if (!c.success) {
@@ -206,8 +186,8 @@ class InGame extends AppWindow {
       return "";
     })();
     // this.logLine(this._eventsLog, `Map: ${ mapName } `, true);
-    this.rpc.updatePresenceWithButtonsArray(inMenus ? this.owInfo.gameType : (owState ? formatVariables(owState, this.owInfo) : this.owInfo.gameType),
-      inMenus ? "" : (owDetails ? formatVariables(owDetails, this.owInfo) : `KDA: ${player.kills} /${player.deaths}/${player.assists} `),
+    this.rpc.updatePresenceWithButtonsArray(inMenus ? this.owInfo.gameType : (owState ? owFormatVariables(owState, this.owInfo) : this.owInfo.gameType),
+      inMenus ? "" : (owDetails ? owFormatVariables(owDetails, this.owInfo) : `KDA: ${player.kills} /${player.deaths}/${player.assists} `),
       'overwatch',
       `On ${mapName || "Earth"} `,
       inMenus ? "" : player.hero_name.toLowerCase(),
@@ -247,7 +227,8 @@ class InGame extends AppWindow {
   }
 
   private onInfoUpdates(info) {
-    // this.logLine(this._eventsLog, info, false);
+    this.logLine(this._eventsLog, info, false);
+    // overwatch
     if (info.game_info) {
       const { game_state } = info.game_info;
       if (game_state && (game_state == "match_ended" || game_state == "match_in_progress")) {
@@ -278,6 +259,47 @@ class InGame extends AppWindow {
           if (roster.battlenet_tag == this.battleTag) {
             this.owInfo.player = roster;
             this.logLine(this._eventsLog, "Updated local player(2)", true)
+          }
+        }
+      }
+    }
+    // counterstrike
+    if (info.live_data) {
+      const { live_data } = info;
+      if (live_data.provider) {
+        const { provider } = live_data;
+        this.steamId = provider.steam_id;
+      }
+      if (live_data.round_number) {
+        this.csInfo.roundNumber = live_data.round_number;
+        this.csInfo.gameMode = live_data.mode_name;
+        this.csInfo.mapName = live_data.map_name;
+        this.steamId = live_data.steam_id;
+        console.log(`Map: ${this.csInfo.mapName}, Round: ${this.csInfo.roundNumber}`)
+      }
+    }
+    if (info.match_info) {
+      const { match_info } = info;
+      for (const r in match_info) {
+        if (r.startsWith("roster_")) {
+          const roster = JSON.parse(match_info[r]);
+          if (!roster) continue;
+          if ((roster.steamid == this.steamId)) {
+            console.log(roster)
+            const player: CSPlayer = {
+              assists: roster.assists,
+              kills: roster.kills,
+              deaths: parseInt(roster.deaths),
+              damage: parseInt(roster.damage),
+              hs: parseInt(roster.hs),
+              money: parseInt(roster.money),
+              ping: parseInt(roster.ping),
+              player_name: roster.nickname,
+              team: roster.team
+            }
+            this.csInfo.player = player;
+            this.logLine(this._eventsLog, "Updated local player", true)
+            break;
           }
         }
       }
