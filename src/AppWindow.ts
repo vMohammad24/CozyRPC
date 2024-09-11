@@ -47,16 +47,18 @@ export class AppWindow {
     const rpcTitle = document.getElementById('rpcStatusTitle');
     const username = document.getElementById('username');
 
-    overwolf.extensions.current.getExtraObject("DiscordRPCPlugin", (r) => {
-      const rpc = r.object
-      rpc.initialize("1279931263897042984", LogLevel.None, (user) => {
+    if (username) {
+      overwolf.extensions.current.getExtraObject("DiscordRPCPlugin", (r) => {
+        const rpc = r.object
+        rpc.initialize("1279931263897042984", LogLevel.None, (user) => {
+
+        })
+        rpc.onClientReady.addListener((user) => {
+          username.innerText = user.user.Username;
+        })
 
       })
-      rpc.onClientReady.addListener((user) => {
-        username.innerText = user.user.Username;
-      })
-
-    })
+    }
     // consts
     const games = [
       {
