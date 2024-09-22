@@ -8,10 +8,10 @@
     "minimum-overwolf-version": "0.160.0",
     "description": "Replaces the boring default discord rpc for overwatch and counter strike 2 with a feature rich one.",
     "dock_button_title": "CozyRPC",
-    "icon": "icons/IconMouseOver.png",
-    "icon_gray": "icons/IconMouseNormal.png",
-    "launcher_icon": "icons/desktop-icon.ico",
-    "window_icon": "icons/IconMouseOver.png"
+    "icon": "icons/cozyrpc.png",
+    "icon_gray": "icons/cozyrpc.png",
+    "launcher_icon": "icons/cozyrpc.png",
+    "window_icon": "icons/cozyrpc.png"
   },
   "permissions": [
     "Hotkeys",
@@ -29,8 +29,7 @@
     "hotkeys": {
       "debug_menu": {
         "title": "Show/Hide CozyRPC Debug menu",
-        "action-type": "toggle",
-        "default": "Ctrl+F"
+        "action-type": "toggle"
       }
     },
     "protocol_override_domains": {
